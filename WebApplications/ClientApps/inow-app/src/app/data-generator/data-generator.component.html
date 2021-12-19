@@ -1,0 +1,17 @@
+<label for="fileSizeinKb">Size of the output file (KB)</label>
+<input type="number" id="fileSizeinKb" [(ngModel)]="fileSizeinKb" >
+<br>
+<button type="button" (click)="onStratClick()">Start</button>
+<button type="button" (click)="onStopClick()" >Stop</button>
+
+<br>
+<label for="numericValue">Counter 1 (Numeric)</label>
+<input type="number" id="numericValue" [(ngModel)]="numericValue" readonly >
+<br>
+<label for="alphanumericValue">Counter 2 (Alphanumeric)</label>
+<input type="text" id="alphanumericValue" [(ngModel)]="alphanumericValue" readonly >
+<br>
+<label for="floatValue">Counter 3 (Float)</label> 
+<input type="number" id="floatValue" [(ngModel)]="floatValue" readonly>
+<br>
+<button type="button" (click)="onGenerateReportClick()" >Generate Report</button>
