@@ -173,6 +173,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Constants.cs" />
+    <Compile Include="Models\DataPercentage.cs" />
     <Compile Include="Models\FileInput.cs" />
     <Compile Include="Models\FileSettings.cs" />
     <Compile Include="Models\ViewModel\FileInputViewModel.cs" />

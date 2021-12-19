@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataGeneratorModel } from '../models/data-generator.model';
 import { FileInputModel } from '../models/file-input.model';
 import { FileSettingsmodel } from '../models/file-settings.model';
@@ -17,12 +18,10 @@ export class DataGeneratorComponent implements OnInit {
   fileSizeinKb: number;
 
   constructor(public randomTextOrNumberGenerator: RandomTextOrNumberGenerator,
+    private router: Router,
     public _dataGeneratorService: DataGeneratorService) { }
 
   ngOnInit(): void {
-    this.numericValue = this.randomTextOrNumberGenerator.getRandomInteger(1,100000);
-    this.floatValue = this.randomTextOrNumberGenerator.getRandomFloat(1,100000);
-    this.alphanumericValue = this.randomTextOrNumberGenerator.getRandomAlphanumericWithSpace(6);
   }
 
   onStratClick() {
@@ -34,16 +33,18 @@ export class DataGeneratorComponent implements OnInit {
     const dataSetting: FileSettingsmodel= {
       FileSizeInKb: this.fileSizeinKb,
       AlphanumericDataPercentage: null,
-      FloatDataPercentage: null
+      FloatDataPercentage: null,
+      NumericDataPercentage: null
     }
     const dataGeneratorModel: DataGeneratorModel= {
-      FileInput: inputData,
+      FileInputs: inputData,
       FileSettings: dataSetting
     }
-
-    this._dataGeneratorService.addData(dataGeneratorModel).subscribe(ips=>{
-      if(ips){
-        console.log(ips);
+    this._dataGeneratorService.addData(dataGeneratorModel).subscribe(response=>{
+      if(response){
+        this.numericValue = response.NumericInput;
+        this.alphanumericValue = response.AlphanumericInput.trim();
+        this.floatValue = response.FloatInput;
       }
     });
   }
@@ -53,7 +54,7 @@ export class DataGeneratorComponent implements OnInit {
   }
 
   onGenerateReportClick() {
-
+    this.router.navigate(['/report']);
   }
 
 }

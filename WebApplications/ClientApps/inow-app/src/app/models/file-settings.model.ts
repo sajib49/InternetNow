@@ -1,7 +1,6 @@
-export class FileSettingsmodel{
+import { DataPercentageModel } from "./Data-percentage.model";
+
+export class FileSettingsmodel extends DataPercentageModel{
     FileSizeInKb: number;
-    NumericDataPercentage?: number;
-    AlphanumericDataPercentage?: number;
-    FloatDataPercentage?: number;
 }
   

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,18 +20,7 @@ namespace INow.API.Controllers
         [Route("save-data")]
         public IHttpActionResult SaveRandomTextOrNumber([FromBody] FileInputViewModel fileDataDetails)
         {
-            var fileFolder = HttpContext.Current.Server.MapPath("~/Files/");
-
-            if (!Directory.Exists(fileFolder))
-            {
-                Directory.CreateDirectory(fileFolder);
-            }
-            string filePath = Path.Combine(fileFolder, "INow.txt");
-
-            if (!(File.Exists(filePath)))
-            {
-                File.CreateText(filePath);
-            }
+            string filePath = GetFilePath();
 
             string line = "";
             using (StreamReader sr = new StreamReader(filePath))
@@ -57,6 +47,81 @@ namespace INow.API.Controllers
             }
         }
 
+
+        [HttpGet]
+        [ResponseType(typeof (DataPercentage))]
+        [Route("get-data")]
+        public IHttpActionResult GetDataForRepost()
+        {
+            return Ok(GetDataPercentage());
+        }
+
+        [NonAction]
+        private string GetFilePath()
+        {
+            var fileFolder = HttpContext.Current.Server.MapPath("~/Files/");
+
+            if (!Directory.Exists(fileFolder))
+            {
+                Directory.CreateDirectory(fileFolder);
+            }
+            string filePath = Path.Combine(fileFolder, Constants.FileName);
+
+            if (!(File.Exists(filePath)))
+            {
+                File.CreateText(filePath);
+            }
+            return filePath;
+        }
+
+        [NonAction]
+        private DataPercentage GetDataPercentage()
+        {
+            string filePath = GetFilePath();
+
+            string line = "";
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                line = sr.ReadLine();
+            }
+            var dataList = line?.Split(',').Take(20).ToList();
+
+            int numericDataOccurence = 0;
+            int alphanumericDataOccurence = 0;
+            int floatDataOccurence = 0;
+
+            if (dataList != null)
+            {
+                foreach (var aData in dataList)
+                {
+                    float f;
+                    int i;
+                    if (int.TryParse(aData, out i))
+                    {
+                        ++numericDataOccurence;
+                    }
+                    else if (float.TryParse(aData, out f))
+                    {
+                        ++floatDataOccurence;
+                    }
+                    else
+                    {
+                        ++alphanumericDataOccurence;
+                    }
+                }
+
+                var ddd = (int) Math.Round((double) (100* numericDataOccurence) /dataList.Count);
+
+                return new DataPercentage
+                {
+                    AlphanumericDataPercentage = alphanumericDataOccurence > 0 ? (int)Math.Round((double)(100 * alphanumericDataOccurence) / dataList.Count) : 0,
+                    FloatDataPercentage = floatDataOccurence > 0 ? (int) Math.Round((double)(100 * floatDataOccurence) / dataList.Count) : 0,
+                    NumericDataPercentage = numericDataOccurence > 0 ? (int) Math.Round((double)(100 * numericDataOccurence) / dataList.Count) : 0
+                };
+            }
+            return null;
+        }
+
         [NonAction]
         private bool CheckDataValidation(string filename,List<string> dataList, FileInputViewModel fileDataDetails)
         {
@@ -66,9 +131,9 @@ namespace INow.API.Controllers
                 return false;
             }
 
-            if (fileDataDetails.FileSettings.NumericDataPercentage != null
-                || fileDataDetails.FileSettings.AlphanumericDataPercentage != null
-                || fileDataDetails.FileSettings.FloatDataPercentage != null)
+            if (fileDataDetails.FileSettings.NumericDataPercentage >0
+                || fileDataDetails.FileSettings.AlphanumericDataPercentage >0
+                || fileDataDetails.FileSettings.FloatDataPercentage >0)
             {
                 int numericDataOccurence = 0;
                 int alphanumericDataOccurence = 0;
