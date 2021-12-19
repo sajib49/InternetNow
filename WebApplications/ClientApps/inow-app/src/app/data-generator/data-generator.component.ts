@@ -7,10 +7,10 @@ import { RandomTextOrNumberGenerator } from '../shared/services/random-text-numb
   styleUrls: ['./data-generator.component.css']
 })
 export class DataGeneratorComponent implements OnInit {  
-  numericValue: number | undefined;
-  alphanumericValue: string | undefined;
-  floatValue: number | undefined;
-  fileSizeinKb: number | undefined;
+  numericValue: number;
+  alphanumericValue: string;
+  floatValue: number;
+  fileSizeinKb: number;
 
   constructor(public randomTextOrNumberGenerator: RandomTextOrNumberGenerator) { }
 
