@@ -17,6 +17,11 @@ export class DataGeneratorComponent implements OnInit {
   floatValue: number;
   fileSizeinKb: number;
 
+  numericPercentage: number;
+  alphanumericPercentage: string;
+  floatPercentage: number;
+
+
   constructor(public randomTextOrNumberGenerator: RandomTextOrNumberGenerator,
     private router: Router,
     public _dataGeneratorService: DataGeneratorService) { }
@@ -25,6 +30,7 @@ export class DataGeneratorComponent implements OnInit {
   }
 
   onStratClick() {
+
     const inputData: FileInputModel={
       AlphanumericInput:  this.randomTextOrNumberGenerator.getRandomAlphanumericWithSpace(6),
       FloatInput: this.randomTextOrNumberGenerator.getRandomFloat(1,100000),
@@ -32,9 +38,9 @@ export class DataGeneratorComponent implements OnInit {
     };
     const dataSetting: FileSettingsmodel= {
       FileSizeInKb: this.fileSizeinKb,
-      AlphanumericDataPercentage: null,
-      FloatDataPercentage: null,
-      NumericDataPercentage: null
+      AlphanumericDataPercentage: this.alphanumericPercentage,
+      FloatDataPercentage: this.floatPercentage,
+      NumericDataPercentage: this.numericPercentage
     }
     const dataGeneratorModel: DataGeneratorModel= {
       FileInputs: inputData,

@@ -110,8 +110,6 @@ namespace INow.API.Controllers
                     }
                 }
 
-                var ddd = (int) Math.Round((double) (100* numericDataOccurence) /dataList.Count);
-
                 return new DataPercentage
                 {
                     AlphanumericDataPercentage = alphanumericDataOccurence > 0 ? (int)Math.Round((double)(100 * alphanumericDataOccurence) / dataList.Count) : 0,
@@ -130,56 +128,26 @@ namespace INow.API.Controllers
             {
                 return false;
             }
+            var dataPercentage = GetDataPercentage();
 
-            if (fileDataDetails.FileSettings.NumericDataPercentage >0
-                || fileDataDetails.FileSettings.AlphanumericDataPercentage >0
-                || fileDataDetails.FileSettings.FloatDataPercentage >0)
+            if (fileDataDetails.FileSettings.NumericDataPercentage > 0 &&
+                   dataPercentage.NumericDataPercentage >= fileDataDetails.FileSettings.NumericDataPercentage)
             {
-                int numericDataOccurence = 0;
-                int alphanumericDataOccurence = 0;
-                int floatDataOccurence = 0;
-
-                foreach (var aData in dataList)
-                {
-                    float f;
-                    int i;
-                    if (float.TryParse(aData, out f))
-                    {
-                        ++floatDataOccurence;
-                    }
-                    else if (int.TryParse(aData, out i))
-                    {
-                        ++numericDataOccurence;
-                    }
-                    else
-                    {
-                        ++alphanumericDataOccurence;
-                    }
-                }
-
-                int numericDataOccurenceInPercentage = numericDataOccurence>0 ? ((numericDataOccurence/dataList.Count)*100) : 0;
-                int alphanumericDataOccurenceInPercentage = alphanumericDataOccurence > 0 ? ((alphanumericDataOccurence / dataList.Count) * 100) : 0;
-                int floatDataOccurenceInPercentage = floatDataOccurence > 0 ? ((floatDataOccurence / dataList.Count) * 100) : 0;
-
-                if (fileDataDetails.FileSettings.NumericDataPercentage > 0 &&
-                    numericDataOccurenceInPercentage >= fileDataDetails.FileSettings.NumericDataPercentage)
-                {
-                    return false;
-                }
-
-                if (fileDataDetails.FileSettings.AlphanumericDataPercentage > 0 &&
-                    alphanumericDataOccurenceInPercentage >= fileDataDetails.FileSettings.AlphanumericDataPercentage)
-                {
-                    return false;
-                }
-
-                if (fileDataDetails.FileSettings.FloatDataPercentage > 0 &&
-                    floatDataOccurenceInPercentage >= fileDataDetails.FileSettings.FloatDataPercentage)
-                {
-                    return false;
-                }
+                return false;
             }
-            
+
+            if (fileDataDetails.FileSettings.AlphanumericDataPercentage > 0 &&
+                dataPercentage.AlphanumericDataPercentage >= fileDataDetails.FileSettings.AlphanumericDataPercentage)
+            {
+                return false;
+            }
+
+            if (fileDataDetails.FileSettings.FloatDataPercentage > 0 &&
+                dataPercentage.FloatDataPercentage >= fileDataDetails.FileSettings.FloatDataPercentage)
+            {
+                return false;
+            }
+
             return true;
         }
     }
