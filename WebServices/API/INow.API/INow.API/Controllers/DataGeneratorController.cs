@@ -20,15 +20,26 @@ namespace INow.API.Controllers
         [Route("save-data")]
         public IHttpActionResult SaveRandomTextOrNumber([FromBody] FileInputViewModel fileDataDetails)
         {
-            string filePath = GetFilePath();
+            var fileFolder = HttpContext.Current.Server.MapPath("~/Files/");
 
-            string line = "";
+            if (!Directory.Exists(fileFolder))
+            {
+                Directory.CreateDirectory(fileFolder);
+            }
+            string filePath = Path.Combine(fileFolder, Constants.FileName);
+
+            if (!(File.Exists(filePath)))
+            {
+                File.CreateText(filePath);
+            }
+
+            string line;
             using (StreamReader sr = new StreamReader(filePath))
             {
                 line = sr.ReadLine();
             }
-
             var dataList = line?.Split(',').Take(20).ToList();
+
 
             using (StreamWriter sw = (File.Exists(filePath)) ? File.AppendText(filePath) : File.CreateText(filePath))
             {
@@ -53,11 +64,12 @@ namespace INow.API.Controllers
         [Route("get-data")]
         public IHttpActionResult GetDataForRepost()
         {
-            return Ok(GetDataPercentage());
+            
+            return Ok(GetDataPercentage(ReadFile()));
         }
 
         [NonAction]
-        private string GetFilePath()
+        private List<string> ReadFile()
         {
             var fileFolder = HttpContext.Current.Server.MapPath("~/Files/");
 
@@ -71,21 +83,18 @@ namespace INow.API.Controllers
             {
                 File.CreateText(filePath);
             }
-            return filePath;
-        }
 
-        [NonAction]
-        private DataPercentage GetDataPercentage()
-        {
-            string filePath = GetFilePath();
-
-            string line = "";
+            string line;
             using (StreamReader sr = new StreamReader(filePath))
             {
                 line = sr.ReadLine();
             }
-            var dataList = line?.Split(',').Take(20).ToList();
 
+            return line?.Split(',').Take(20).ToList();
+        }
+
+        private DataPercentage GetDataPercentage(List<string> dataList)
+        {
             int numericDataOccurence = 0;
             int alphanumericDataOccurence = 0;
             int floatDataOccurence = 0;
@@ -128,7 +137,8 @@ namespace INow.API.Controllers
             {
                 return false;
             }
-            var dataPercentage = GetDataPercentage();
+            var dataPercentage = GetDataPercentage(dataList);
+            
 
             if (fileDataDetails.FileSettings.NumericDataPercentage > 0 &&
                    dataPercentage.NumericDataPercentage >= fileDataDetails.FileSettings.NumericDataPercentage)

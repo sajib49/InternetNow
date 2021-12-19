@@ -21,6 +21,8 @@ export class DataGeneratorComponent implements OnInit {
   alphanumericPercentage: string;
   floatPercentage: number;
 
+  isStopClick: boolean = false;
+
 
   constructor(public randomTextOrNumberGenerator: RandomTextOrNumberGenerator,
     private router: Router,
@@ -30,7 +32,7 @@ export class DataGeneratorComponent implements OnInit {
   }
 
   onStratClick() {
-
+    this.isStopClick = false;
     const inputData: FileInputModel={
       AlphanumericInput:  this.randomTextOrNumberGenerator.getRandomAlphanumericWithSpace(6),
       FloatInput: this.randomTextOrNumberGenerator.getRandomFloat(1,100000),
@@ -51,12 +53,16 @@ export class DataGeneratorComponent implements OnInit {
         this.numericValue = response.NumericInput;
         this.alphanumericValue = response.AlphanumericInput.trim();
         this.floatValue = response.FloatInput;
+        
+        if(this.isStopClick == false) {
+          this.onStratClick();
+        }        
       }
     });
   }
 
   onStopClick() {
-
+    this.isStopClick = true;
   }
 
   onGenerateReportClick() {
