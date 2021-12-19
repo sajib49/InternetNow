@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { DataGeneratorComponent } from './data-generator/data-generator.component';
 import { ReportGeneratorComponent } from './report-generator/report-generator.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

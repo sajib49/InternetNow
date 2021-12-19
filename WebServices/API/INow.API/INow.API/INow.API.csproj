@@ -177,6 +177,7 @@
     <Compile Include="Models\FileInput.cs" />
     <Compile Include="Models\FileSettings.cs" />
     <Compile Include="Models\ViewModel\FileInputViewModel.cs" />
+    <Compile Include="Models\ViewModel\ReportDataViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

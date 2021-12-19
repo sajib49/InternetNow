@@ -1,6 +1,6 @@
 
 <h3>Distribution of the data types in the file</h3>
-<table>
+<table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th>% Numeric</th>
@@ -10,9 +10,17 @@
     </thead>
     <tbody>
         <tr>
-            <td>{{data?.NumericDataPercentage}}</td>
-            <td>{{data?.AlphanumericDataPercentage}}</td>
-            <td>{{data?.FloatDataPercentage}}</td>
+            <td>{{data?.DataPercentage.NumericDataPercentage}}</td>
+            <td>{{data?.DataPercentage.AlphanumericDataPercentage}}</td>
+            <td>{{data?.DataPercentage.FloatDataPercentage}}</td>
         </tr>
     </tbody>
 </table>
+
+
+
+<div *ngFor="let aDataWithTypes of data?.DataWithType" >
+    <ul>
+        <li>{{aDataWithTypes}}</li>
+    </ul>
+</div>

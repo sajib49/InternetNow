@@ -64,7 +64,7 @@ namespace INow.API.Controllers
         [Route("get-data")]
         public IHttpActionResult GetDataForRepost()
         {
-            
+           
             return Ok(GetDataPercentage(ReadFile()));
         }
 
@@ -93,37 +93,48 @@ namespace INow.API.Controllers
             return line?.Split(',').Take(20).ToList();
         }
 
-        private DataPercentage GetDataPercentage(List<string> dataList)
+        [NonAction]
+        private ReportDataViewModel GetDataPercentage(List<string> dataList)
         {
+
+
             int numericDataOccurence = 0;
             int alphanumericDataOccurence = 0;
             int floatDataOccurence = 0;
 
             if (dataList != null)
             {
+                var dataWithType = new List<string>();
                 foreach (var aData in dataList)
                 {
                     float f;
                     int i;
                     if (int.TryParse(aData, out i))
                     {
+                        dataWithType.Add(aData+" - numeric");
                         ++numericDataOccurence;
                     }
                     else if (float.TryParse(aData, out f))
                     {
+                        dataWithType.Add(aData + " - float");
                         ++floatDataOccurence;
                     }
                     else
                     {
+                        dataWithType.Add(aData.Trim() + " - alphanumeric");
                         ++alphanumericDataOccurence;
                     }
                 }
 
-                return new DataPercentage
+                return  new ReportDataViewModel
                 {
-                    AlphanumericDataPercentage = alphanumericDataOccurence > 0 ? (int)Math.Round((double)(100 * alphanumericDataOccurence) / dataList.Count) : 0,
-                    FloatDataPercentage = floatDataOccurence > 0 ? (int) Math.Round((double)(100 * floatDataOccurence) / dataList.Count) : 0,
-                    NumericDataPercentage = numericDataOccurence > 0 ? (int) Math.Round((double)(100 * numericDataOccurence) / dataList.Count) : 0
+                    DataPercentage = new DataPercentage
+                    {
+                        AlphanumericDataPercentage = alphanumericDataOccurence > 0 ? (int)Math.Round((double)(100 * alphanumericDataOccurence) / dataList.Count) : 0,
+                        FloatDataPercentage = floatDataOccurence > 0 ? (int)Math.Round((double)(100 * floatDataOccurence) / dataList.Count) : 0,
+                        NumericDataPercentage = numericDataOccurence > 0 ? (int)Math.Round((double)(100 * numericDataOccurence) / dataList.Count) : 0
+                    },
+                    DataWithType = dataWithType
                 };
             }
             return null;
@@ -137,7 +148,7 @@ namespace INow.API.Controllers
             {
                 return false;
             }
-            var dataPercentage = GetDataPercentage(dataList);
+            var dataPercentage = GetDataPercentage(dataList).DataPercentage;
             
 
             if (fileDataDetails.FileSettings.NumericDataPercentage > 0 &&
